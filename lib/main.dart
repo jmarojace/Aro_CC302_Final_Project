@@ -11,23 +11,35 @@ void main() {
   runApp(const MiniStoreApp());
 }
 
-class MiniStoreApp extends StatelessWidget {
+class MiniStoreApp extends StatefulWidget {
   const MiniStoreApp({super.key});
+
+  @override
+  State<MiniStoreApp> createState() => _MiniStoreAppState();
+}
+
+class _MiniStoreAppState extends State<MiniStoreApp> {
+  bool _isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     const teal = Color(0xFF0F4C5C);
     const ink = Color(0xFF16282D);
+    final brightness = _isDarkMode ? Brightness.dark : Brightness.light;
+    final colors = ColorScheme.fromSeed(
+      seedColor: teal,
+      secondary: const Color(0xFFF0B429),
+      brightness: brightness,
+    );
     return MaterialApp(
       title: 'Mini Store',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: teal,
-          secondary: const Color(0xFFF0B429),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF2F6F5),
+        colorScheme: colors,
+        scaffoldBackgroundColor: _isDarkMode
+            ? const Color(0xFF101A1D)
+            : const Color(0xFFF2F6F5),
         textTheme: GoogleFonts.plusJakartaSansTextTheme(),
         appBarTheme: AppBarTheme(
           backgroundColor: teal,
@@ -40,17 +52,21 @@ class MiniStoreApp extends StatelessWidget {
           ),
         ),
         cardTheme: CardThemeData(
-          color: Colors.white,
+          color: colors.surface,
           elevation: 0,
           margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
           clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: Color(0xFFE1EAE8)),
+            side: BorderSide(
+              color: _isDarkMode
+                  ? const Color(0xFF26363A)
+                  : const Color(0xFFE1EAE8),
+            ),
           ),
         ),
-        navigationBarTheme: const NavigationBarThemeData(
-          backgroundColor: Colors.white,
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: colors.surface,
           indicatorColor: Color(0x66F0B429),
         ),
         filledButtonTheme: FilledButtonThemeData(
@@ -74,8 +90,13 @@ class MiniStoreApp extends StatelessWidget {
       // Shows the login screen until the user signs in
       home: ListenableBuilder(
         listenable: auth,
-        builder: (context, _) =>
-            auth.isLoggedIn ? const HomeShell() : const LoginScreen(),
+        builder: (context, _) => auth.isLoggedIn
+            ? HomeShell(
+                isDarkMode: _isDarkMode,
+                onDarkModeChanged: (value) =>
+                    setState(() => _isDarkMode = value),
+              )
+            : const LoginScreen(),
       ),
     );
   }

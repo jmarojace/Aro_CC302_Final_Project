@@ -74,20 +74,55 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(colors: [Color(0xFF0F4C5C), Color(0xFF1B7A8C)]),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(color: Colors.white.withAlpha(28), borderRadius: BorderRadius.circular(14)),
+                      child: Icon(_editing ? Icons.edit_outlined : Icons.add_box_outlined, color: const Color(0xFFF0B429)),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(_editing ? 'Keep details up to date' : 'Add to your shelves', style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800)),
+                          const SizedBox(height: 3),
+                          Text(_editing ? 'Update the product information below.' : 'Enter the details for your new product.', style: const TextStyle(color: Color(0xFFD6E8EB), fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
               TextFormField(
                 controller: _name,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Product name',
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.inventory_2_outlined),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                 ),
                 validator: _required,
               ),
               const SizedBox(height: 14),
               TextFormField(
                 controller: _category,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Category',
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.category_outlined),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                 ),
                 validator: _required,
               ),
@@ -97,9 +132,12 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Price (₱)',
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.payments_outlined),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                 ),
                 validator: (v) {
                   final n = double.tryParse(v ?? '');
@@ -112,9 +150,12 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               TextFormField(
                 controller: _stock,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Stock',
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.stacked_bar_chart),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                 ),
                 validator: (v) {
                   final n = int.tryParse(v ?? '');
@@ -129,7 +170,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(52),
                 ),
-                child: Text(_editing ? 'Save changes' : 'Add product'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(_editing ? Icons.save_outlined : Icons.add),
+                    const SizedBox(width: 8),
+                    Text(_editing ? 'Save changes' : 'Add product'),
+                  ],
+                ),
               ),
             ],
           ),

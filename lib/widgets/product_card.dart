@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import '../state/inventory_store.dart';
+import 'state_views.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -11,11 +12,12 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
+    return HoverLift(
+      child: Card(
+        child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 2, 10),
+          padding: const EdgeInsets.fromLTRB(10, 10, 8, 10),
           child: Row(
             children: [
               _Thumb(product),
@@ -29,8 +31,8 @@ class ProductCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
                       ),
                     ),
                     Text(
@@ -60,13 +62,11 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
+              IconButton.filledTonal(
                 tooltip: 'Sell one',
-                icon: const Icon(Icons.shopping_cart_checkout),
-                color: const Color(0xFF0F4C5C),
-                onPressed: product.stock == 0
-                    ? null
-                    : () {
+                icon: const Icon(Icons.shopping_bag_outlined, size: 19),
+                visualDensity: VisualDensity.compact,
+                onPressed: product.stock == 0 ? null : () {
                         inventory.sellOne(product);
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
@@ -79,13 +79,29 @@ class ProductCard extends StatelessWidget {
                           );
                       },
               ),
-              IconButton(
-                tooltip: 'Delete',
-                icon: Icon(Icons.delete_outline, color: Colors.red.shade700),
-                onPressed: () => confirmDelete(context, product),
+              PopupMenuButton<String>(
+                tooltip: 'Product options',
+                icon: const Icon(Icons.more_vert),
+                padding: EdgeInsets.zero,
+                onSelected: (value) {
+                  if (value == 'delete') confirmDelete(context, product);
+                },
+                itemBuilder: (_) => const [
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete_outline, color: Colors.red),
+                        SizedBox(width: 12),
+                        Text('Delete product'),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
+        ),
         ),
       ),
     );

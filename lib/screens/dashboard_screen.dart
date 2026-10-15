@@ -47,26 +47,37 @@ class DashboardScreen extends StatelessWidget {
         return ListView(
           padding: const EdgeInsets.all(12),
           children: [
+            if (inventory.usingSampleCatalog)
+              CatalogNotice(onRetry: inventory.load),
             // Welcome banner
-            Container(
-              padding: const EdgeInsets.all(20),
+            HoverLift(
+              interactive: false,
+              radius: 20,
+              child: Container(
+              padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF0F4C5C), Color(0xFF1B7A8C)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/store_background.webp'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Color(0xCC0B3D49),
+                    BlendMode.srcATop,
+                  ),
                 ),
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x220F4C5C), blurRadius: 18, offset: Offset(0, 8)),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _greeting(),
-                    style: const TextStyle(
-                      color: Color(0xFFBCD6DC),
-                      fontSize: 14,
-                    ),
+                  Row(
+                    children: [
+                      const Icon(Icons.waving_hand_outlined, color: Color(0xFFF0B429), size: 18),
+                      const SizedBox(width: 8),
+                      Text(_greeting(), style: const TextStyle(color: Color(0xFFBCD6DC), fontSize: 14)),
+                    ],
                   ),
                   const SizedBox(height: 2),
                   const Text(
@@ -78,22 +89,31 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  const Text(
-                    'Total stock value',
-                    style: TextStyle(color: Color(0xFFBCD6DC), fontSize: 13),
-                  ),
-                  Text(
-                    _peso(inventory.stockValue),
-                    style: const TextStyle(
-                      color: Color(0xFFF0B429),
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(color: Colors.white.withAlpha(24), borderRadius: BorderRadius.circular(14)),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.account_balance_wallet_outlined, color: Color(0xFFF0B429)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Total stock value', style: TextStyle(color: Color(0xFFBCD6DC), fontSize: 12)),
+                              Text(_peso(inventory.stockValue), maxLines: 1, overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Color(0xFFF0B429), fontSize: 27, fontWeight: FontWeight.w800)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
@@ -115,12 +135,12 @@ class DashboardScreen extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(4, 16, 4, 6),
+              padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
               child: Row(
                 children: [
                   const Text(
                     'Low stock items',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: Color(0xFF16282D)),
                   ),
                   const SizedBox(width: 8),
                   if (low.isNotEmpty)

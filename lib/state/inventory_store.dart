@@ -177,19 +177,24 @@ class InventoryStore extends ChangeNotifier {
   List<Product> products = [];
   LoadState state = LoadState.loading;
   String error = '';
+  bool usingSampleCatalog = false;
   String query = '';
   bool lowOnly = false;
 
   Future<void> load() async {
     state = LoadState.loading;
+    error = '';
     notifyListeners();
     try {
       final fromApi = await _service.fetchProducts();
       products = [..._filipinoProducts(), ...fromApi];
+      usingSampleCatalog = false;
       state = LoadState.ready;
     } catch (_) {
-      error = 'Could not load products. Check your internet connection and try again.';
-      state = LoadState.error;
+      // Keep the store usable when the remote catalog is unavailable.
+      products = _filipinoProducts();
+      usingSampleCatalog = true;
+      state = LoadState.ready;
     }
     notifyListeners();
   }

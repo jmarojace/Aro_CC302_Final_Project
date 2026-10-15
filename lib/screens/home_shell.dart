@@ -5,9 +5,18 @@ import '../widgets/responsive_body.dart';
 import 'dashboard_screen.dart';
 import 'inventory_screen.dart';
 import 'product_form_screen.dart';
+import 'profile_screen.dart';
+import 'settings_screen.dart';
 
 class HomeShell extends StatefulWidget {
-  const HomeShell({super.key});
+  final bool isDarkMode;
+  final ValueChanged<bool> onDarkModeChanged;
+
+  const HomeShell({
+    super.key,
+    required this.isDarkMode,
+    required this.onDarkModeChanged,
+  });
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -42,9 +51,43 @@ class _HomeShellState extends State<HomeShell> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Log out',
-            icon: const Icon(Icons.logout),
-            onPressed: auth.logout,
+            tooltip: 'Profile',
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Settings',
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SettingsScreen(
+                  isDarkMode: widget.isDarkMode,
+                  onDarkModeChanged: widget.onDarkModeChanged,
+                ),
+              ),
+            ),
+          ),
+          PopupMenuButton<String>(
+            tooltip: 'More options',
+            onSelected: (value) {
+              if (value == 'logout') auth.logout();
+            },
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 12),
+                    Text('Log out'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -58,7 +101,7 @@ class _HomeShellState extends State<HomeShell> {
                   labelType: extended
                       ? NavigationRailLabelType.none
                       : NavigationRailLabelType.all,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   indicatorColor: const Color(0x66F0B429),
                   destinations: const [
                     NavigationRailDestination(
@@ -101,6 +144,7 @@ class _HomeShellState extends State<HomeShell> {
                   label: 'Inventory',
                 ),
               ],
+              backgroundColor: Theme.of(context).colorScheme.surface,
             ),
     );
   }

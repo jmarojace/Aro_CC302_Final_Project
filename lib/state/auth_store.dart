@@ -6,6 +6,8 @@ class AuthStore extends ChangeNotifier {
 
   bool isLoggedIn = false;
 
+  String get accountEmail => _email;
+
   bool login(String email, String password) {
     final ok = email.trim().toLowerCase() == _email && password == _password;
     if (ok) {
